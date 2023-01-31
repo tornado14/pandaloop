@@ -1,0 +1,34 @@
+version: 2.1
+
+#
+# Variables
+#
+
+project_directory: &project_directory ~/project
+
+#
+# Jobs
+#
+
+jobs:
+  test:
+    working_directory: *project_directory
+    macos:
+      xcode: 13.4.1
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: |
+            set -o pipefail && xcodebuild -project LoopKit.xcodeproj -scheme Shared build -destination 'name=iPhone 8' test | xcpretty
+      - store_test_results:
+          path: test_output
+#
+# Workflows
+#
+
+workflows:
+  version: 2.1
+  build_and_test:
+    jobs:
+      - test
